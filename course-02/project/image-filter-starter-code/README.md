@@ -1,3 +1,8 @@
+
+An endpoint URL for a running elastic beanstalk deployment (EB_URL) :
+
+http://image-filter-starter-code-dev22222.us-east-2.elasticbeanstalk.com/filteredimage?image_url=https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcThgXTN-J9S3-LYWvRl8InVQaqnLPCJDs9jSeZKPPdUHv3IcE8I%26usqp=CAU
+
 # Udagram Image Filtering Microservice
 
 Udagram is a simple cloud application developed alongside the Udacity Cloud Engineering Nanodegree. It allows users to register and log into a web client, post photos to the feed, and process photos using an image filtering microservice.
