@@ -4,7 +4,6 @@ service:
 plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
-  - serverless-reqvalidator-plugin
 
 provider:
   name: aws
@@ -22,6 +21,21 @@ provider:
     USER_ID_INDEX: UserIdIndex
     IMAGES_S3_BUCKET: todo-app-arbi-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
+
+custom:
+  documentation:
+    api:
+      info:
+        version: v1.0.0
+        title: Serverless TODO application API
+        description: Serverless TODO application API
+    models:
+      - name: CreateTodoRequest
+        contentType: application/json
+        schema: ${file(src/models/create-todo-request.json)}
+      - name: UpdateTodoRequest
+        contentType: application/json
+        schema: ${file(src/models/update-todo-request.json)}   
 
 functions:
 
@@ -61,12 +75,10 @@ functions:
           path: todos
           cors: true
           authorizer: Auth
-          reqValidatorName: RequestBodyValidator
-          documentation:
-            summary: Create a new todo
-            description: Create a new todo
-            requestModels:
-              'application/json': CreateTodoRequest
+          request:
+            schema:
+              application/json: ${file(src/models/create-todo-request.json)}   
+          
     deploymentSettings:
       type: Linear10PercentEvery1Minute
       alias: Live
@@ -90,6 +102,9 @@ functions:
           path: todos/{todoId}
           cors: true
           authorizer: Auth
+          request:
+            schema:
+              application/json: ${file(src/models/update-todo-request.json)}   
           reqValidatorName: RequestBodyValidator
           documentation:
             summary: Update todo
@@ -192,16 +207,8 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
-              
-    RequestBodyValidator:
-      Type: AWS::ApiGateway::RequestValidator
-      Properties:
-        Name: 'request-body-validator'
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        ValidateRequestBody: true
-        ValidateRequestParameters: false
 
+    
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
